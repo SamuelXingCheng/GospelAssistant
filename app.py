@@ -18,6 +18,8 @@ handler = WebhookHandler(LINE_CHANNEL_SECRET)
 # 設定 OpenAI API Key
 openai.api_key = OPENAI_API_KEY
 
+client = openai.OpenAI()  # 創建 OpenAI 客戶端
+
 @app.route("/")
 def home():
     return "LINE Bot is running!"
@@ -39,7 +41,7 @@ def handle_message(event):
     user_message = event.message.text
     
     # 呼叫 OpenAI API
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-3.5-turbo",  # 或 "gpt-4"（需確認你的 API Key 是否有權限）
         messages=[{"role": "user", "content": user_message}]
     )
