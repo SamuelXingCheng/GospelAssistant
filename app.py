@@ -46,7 +46,7 @@ def handle_message(event):
         messages=[{"role": "user", "content": user_message}]
     )
 
-    chatgpt_reply = response["choices"][0]["message"]["content"].strip()
+    chatgpt_reply = response.choices[0].message.content.strip()
 
     # 回應使用者
     line_bot_api.reply_message(
