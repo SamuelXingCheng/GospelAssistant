@@ -10,9 +10,13 @@ app = Flask(__name__)
 # 環境變數（從 Render 讀取）
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
+
+# 設定 OpenAI API Key
+openai.api_key = OPENAI_API_KEY
 
 @app.route("/")
 def home():
