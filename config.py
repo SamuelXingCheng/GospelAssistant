@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 
 # 如果是在本地環境（非 Render），則載入 .env 檔案
 if not os.getenv("RENDER"):
-    load_dotenv()
+    load_dotenv('/Users/xinchenglin/檔案/GospelAssistant/.env')
 
 LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
 LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
