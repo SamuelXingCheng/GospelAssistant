@@ -30,8 +30,14 @@ def handle_line_message(event):
             identity = extracted_info.get("identity", "未知")
             department = extracted_info.get("department", "")
             situation = extracted_info.get("situation", "無")
-            add_care_item(user_id, name, situation)  # 存入資料庫
-            reply_text = f"✅ 已新增名單：{name} - {situation}"
+            print("📌 [DEBUG] situation:", situation)  # 檢查格式
+            date = extracted_info.get("date", "未知")
+            print("📌 [DEBUG] date:", date)  # 檢查格式
+            time = extracted_info.get("time", "未知")
+            print("📌 [DEBUG] time:", time)  # 檢查格式
+            add_care_item(user_id, name, situation, date, time)  # 存入資料庫
+            print("📌 [DEBUG] name:", name)  # 檢查格式
+            reply_text = f"✅ 已新增名單：{name} - {situation} - {date}"
         except Exception:
             reply_text = "⚠️ 格式錯誤！請使用「新增關懷: 姓名, 內容」"
 
