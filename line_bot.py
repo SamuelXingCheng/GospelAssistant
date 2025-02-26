@@ -3,6 +3,7 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 from db import add_care_item, get_care_list, get_conversation, save_conversation
 from openai_api import get_openai_response  # OpenAI API 處理
 from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
+from openai_parser import extract_person_info  # 新增資料萃取功能
 
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
@@ -30,7 +31,7 @@ def handle_line_message(event):
             department = extracted_info.get("department", "")
             situation = extracted_info.get("situation", "無")
             add_care_item(user_id, name, situation)  # 存入資料庫
-            reply_text = f"✅ 已新增關懷：{name} - {content}"
+            reply_text = f"✅ 已新增名單：{name} - {situation}"
         except Exception:
             reply_text = "⚠️ 格式錯誤！請使用「新增關懷: 姓名, 內容」"
 

@@ -16,7 +16,6 @@ def extract_person_info(user_message):
             {"role": "user", "content": user_message}
         ]
     )
-
     extracted_data = response.choices[0].message.content.strip()
 
     try:
