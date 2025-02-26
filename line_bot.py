@@ -39,12 +39,16 @@ def handle_line_message(event):
         # **取得過去的對話歷史**
         conversation_history = get_conversation(user_id)
 
+        if not conversation_history:
+            conversation_history = [{"role": "system", "content": "你是一個智慧 AI 助手，請幫助使用者解答問題。"}]
+
         # **加入使用者新訊息**
         conversation_history.append({"role": "user", "content": user_message})
         
         # **發送完整對話給 OpenAI**
         try:
-            reply_text = get_openai_response(conversation_history)
+            print("📌 [DEBUG] conversation_history:", conversation_history)  # 檢查格式
+            reply_text = get_openai_response(user_message=conversation_history)
             # **儲存最新對話**
             conversation_history.append({"role": "assistant", "content": reply_text})
             save_conversation(user_id, conversation_history)
