@@ -1,6 +1,7 @@
 from flask import Flask, request, abort
 from config import OPENAI_API_KEY, LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET
 from line_bot import handle_line_event  # 匯入處理訊息的方法
+from linebot.exceptions import InvalidSignatureError
 
 
 app = Flask(__name__)

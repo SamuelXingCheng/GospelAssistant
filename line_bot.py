@@ -4,6 +4,7 @@ from db import add_care_item, get_care_list, get_conversation, save_conversation
 from openai_api import get_openai_response  # OpenAI API 處理
 from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
 from openai_parser import extract_person_info  # 新增資料萃取功能
+from linebot.exceptions import InvalidSignatureError
 
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
@@ -43,8 +44,14 @@ def handle_line_message(event):
 
     elif user_message == "查看牧養名單":
         care_list = get_care_list()
-        reply_text = "\n".join([f"📌 {c['name']}: {c['content']}" for c in care_list]) if care_list else "📭 目前沒有牧養名單。"
+        care_items = [item for care in care_list for item in care.get("care_items", [])]
 
+        reply_text = "\n".join([
+            f"📌 {c.get('date', '無日期')} : {c.get('name', '未知')} - {c.get('situation', '無內容')}"
+            for c in care_list
+        ]) if care_list else "📭 目前沒有牧養名單。"
+
+        print("📌 [DEBUG] care_list:", care_list)  # 檢查格式
     else:
         # **取得過去的對話歷史**
         conversation_history = get_conversation(user_id)
