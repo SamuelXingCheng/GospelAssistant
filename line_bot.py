@@ -22,18 +22,21 @@ def handle_line_message(event):
     user_message = event.message.text
     
     # **關懷名單操作**
-    if user_message.startswith("新增關懷:"):
+    if user_message.startswith("新增"):
         try:
-            _, data = user_message.split(":", 1)
-            name, content = map(str.strip, data.split(","))
-            add_care_item(user_id, name, content)
+            extracted_info = extract_person_info(user_message)
+            name = extracted_info.get("name", "未知")
+            identity = extracted_info.get("identity", "未知")
+            department = extracted_info.get("department", "")
+            situation = extracted_info.get("situation", "無")
+            add_care_item(user_id, name, situation)  # 存入資料庫
             reply_text = f"✅ 已新增關懷：{name} - {content}"
         except Exception:
             reply_text = "⚠️ 格式錯誤！請使用「新增關懷: 姓名, 內容」"
 
-    elif user_message == "查看關懷名單":
+    elif user_message == "查看牧養名單":
         care_list = get_care_list()
-        reply_text = "\n".join([f"📌 {c['name']}: {c['content']}" for c in care_list]) if care_list else "📭 目前沒有關懷名單。"
+        reply_text = "\n".join([f"📌 {c['name']}: {c['content']}" for c in care_list]) if care_list else "📭 目前沒有牧養名單。"
 
     else:
         # **取得過去的對話歷史**
