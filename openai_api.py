@@ -10,6 +10,6 @@ def get_openai_response(user_message):
     """使用 OpenAI API 產生回應"""
     response = client.chat.completions.create(
         model="gpt-3.5-turbo",
-        messages=[{"role": "user", "content": user_message}]
+        messages = user_message
     )
     return response.choices[0].message.content.strip()
