@@ -1,12 +1,20 @@
-from linebot import LineBotApi
+from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-import os
+#import os
 from db import add_care_item, get_care_list
 from openai_api import get_openai_response  # OpenAI API 處理
-from config import LINE_CHANNEL_ACCESS_TOKEN  # 匯入環境變數
+from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
 
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 
+handler = WebhookHandler(LINE_CHANNEL_SECRET)
+
+
+def handle_line_event(body, signature):
+    """處理來自 LINE Webhook 的事件"""
+    handler.handle(body, signature)
+
+@handler.add(MessageEvent, message=TextMessage)
 def handle_line_message(event):
     """處理 LINE Bot 訊息"""
     if not isinstance(event.message, TextMessage):
@@ -30,7 +38,11 @@ def handle_line_message(event):
 
     else:
         # **使用 OpenAI 生成回應**
-        reply_text = get_openai_response(user_message)
+        try:
+            reply_text = get_openai_response(user_message)
+        except Exception as e:
+            reply_text = "⚠️ 發生錯誤，請稍後再試！"
+            print(f"OpenAI 回應錯誤: {e}")
 
     # 回應使用者
     line_bot_api.reply_message(
