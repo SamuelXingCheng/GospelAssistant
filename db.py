@@ -84,3 +84,13 @@ def get_conversation(user_id):
     """取得使用者對話紀錄"""
     doc = db.collection("conversations").document(user_id).get()
     return doc.to_dict().get("messages", []) if doc.exists else []
+
+def is_name_exists(name):
+    """檢查關懷名單中是否已有相同人名"""
+    docs = db.collection("care_list").stream()
+    for doc in docs:
+        care_items = doc.to_dict().get("care_items", [])
+        for item in care_items:
+            if item.get("name") == name:
+                return True  # 人名已存在
+    return False  # 人名不存在

@@ -1,6 +1,6 @@
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from db import add_care_item, get_care_list,save_user_name, get_user_name, get_user_care_list, get_conversation, save_conversation
+from db import is_name_exists, add_care_item, get_care_list,save_user_name, get_user_name, get_user_care_list, get_conversation, save_conversation
 from openai_api import get_openai_response  # OpenAI API 處理
 from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
 from openai_parser import extract_person_info  # 新增資料萃取功能
@@ -41,17 +41,20 @@ def handle_line_message(event):
         try:
             extracted_info = extract_person_info(user_message)
             name = extracted_info.get("name", "未知")
-            identity = extracted_info.get("identity", "未知")
-            department = extracted_info.get("department", "")
-            situation = extracted_info.get("situation", "無")
-            print("📌 [DEBUG] situation:", situation)  # 檢查格式
-            date = extracted_info.get("date", "未知")
-            print("📌 [DEBUG] date:", date)  # 檢查格式
-            time = extracted_info.get("time", "未知")
-            print("📌 [DEBUG] time:", time)  # 檢查格式
-            add_care_item(user_id, name, situation, date, time)  # 存入資料庫
-            print("📌 [DEBUG] name:", name)  # 檢查格式
-            reply_text = f"✅ 恭喜{user_name}已新增名單：{name} - {situation} - {date}"
+            if is_name_exists(name):
+                reply_text = f"⚠️ 名單中已經有 {name}，請勿重複新增！"
+            else:
+                identity = extracted_info.get("identity", "未知")
+                department = extracted_info.get("department", "")
+                situation = extracted_info.get("situation", "無")
+                print("📌 [DEBUG] situation:", situation)  # 檢查格式
+                date = extracted_info.get("date", "未知")
+                print("📌 [DEBUG] date:", date)  # 檢查格式
+                time = extracted_info.get("time", "未知")
+                print("📌 [DEBUG] time:", time)  # 檢查格式
+                add_care_item(user_id, name, situation, date, time)  # 存入資料庫
+                print("📌 [DEBUG] name:", name)  # 檢查格式
+                reply_text = f"✅ 恭喜{user_name}已新增名單：{name} - {situation} - {date}"
         except Exception:
             reply_text = "⚠️ 格式錯誤！請使用「新增關懷: 姓名, 內容」"
 
@@ -70,7 +73,7 @@ def handle_line_message(event):
             date_display = f"📅 {current_date}\n" if current_date != previous_date else ""
             
             # 判斷是否顯示使用者名稱
-            user_display = f"👤 {user_name}\n" if user_name != previous_user else ""
+            user_display = f"\n👤 {user_name}\n" if user_name != previous_user else ""
 
             # 建立每一行的文字
             formatted_list.append(
@@ -81,6 +84,7 @@ def handle_line_message(event):
             previous_date = current_date
             previous_user = user_name
         
+        formatted_list.append("\n")
         reply_text = "\n".join(formatted_list) if formatted_list else "📭 目前沒有牧養名單。"
 
         print("📌 [DEBUG] 查看所有牧養名單:", care_list)  # 檢查格式
