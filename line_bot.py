@@ -45,11 +45,25 @@ def handle_line_message(event):
     elif user_message == "查看所有牧養名單":
         care_list = get_care_list()
         care_items = [item for care in care_list for item in care.get("care_items", [])]
+        
+        previous_date = None  # 記錄上一筆的日期
+        formatted_list = []
+        for i, c in enumerate(care_list):
+            current_date = c.get('date', '無日期')  # 取得目前的日期
+            
+            # 如果當前日期與前一個不同，則印出日期
+            date_display = f"📅 {current_date}\n" if current_date != previous_date else ""
+            
+            # 建立每一行的文字
+            formatted_list.append(
+                f"{date_display}{i+1}. {c.get('name', '未知')}：{c.get('situation', '無內容')}"
+            )
+            
+            # 更新 previous_date
+            previous_date = current_date
+        
+        reply_text = "\n".join(formatted_list) if formatted_list else "📭 目前沒有牧養名單。"
 
-        reply_text = "\n".join([
-            f"{i+1}. {c.get('name', '未知')}：{c.get('situation', '無內容')}：📅 {c.get('date', '無日期')}"
-            for i, c in enumerate(care_list)
-        ]) if care_list else "📭 目前沒有牧養名單。"
         print("📌 [DEBUG] 查看所有牧養名單:", care_list)  # 檢查格式
 
     elif user_message == "查看牧養名單":
