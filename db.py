@@ -10,6 +10,18 @@ cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
+def save_user_name(user_id, user_name):
+    """將使用者名稱存入 Firestore"""
+    db.collection("users").document(user_id).set({
+        "name": user_name,
+        "created_at": firestore.SERVER_TIMESTAMP
+    }, merge=True)
+
+def get_user_name(user_id):
+    """從 Firestore 取得使用者名稱"""
+    doc = db.collection("users").document(user_id).get()
+    return doc.to_dict().get("name") if doc.exists else None
+
 def add_care_item(user_id, name, situation, date, time):
     """將關懷名單存入 Firestore"""
     doc_ref = db.collection("care_list").document(user_id)

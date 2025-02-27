@@ -1,6 +1,6 @@
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from db import add_care_item, get_care_list, get_user_care_list, get_conversation, save_conversation
+from db import add_care_item, get_care_list,save_user_name, get_user_name, get_user_care_list, get_conversation, save_conversation
 from openai_api import get_openai_response  # OpenAI API 處理
 from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
 from openai_parser import extract_person_info  # 新增資料萃取功能
@@ -9,6 +9,14 @@ from linebot.exceptions import InvalidSignatureError
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
+def get_line_user_name(user_id):
+    """透過 LINE API 取得使用者名稱"""
+    try:
+        profile = line_bot_api.get_profile(user_id)  # 呼叫 LINE API
+        return profile.display_name  # 回傳 LINE 使用者名稱
+    except Exception as e:
+        print(f"❌ [ERROR] 無法獲取 LINE 使用者名稱: {e}")
+        return "未知使用者"  # 如果失敗，回傳預設值
 
 def handle_line_event(body, signature):
     """處理來自 LINE Webhook 的事件"""
@@ -21,8 +29,13 @@ def handle_line_message(event):
         return
 
     user_id = event.source.user_id  # 取得使用者 ID
+    user_name = get_user_name(user_id)  # 先檢查 Firestore 是否有名稱
     user_message = event.message.text
     
+    if not user_name:
+        user_name = get_line_user_name(user_id)  # 從 LINE API 取得名稱
+        save_user_name(user_id, user_name)  # 存入 Firestore
+
     # **關懷名單操作**
     if user_message.startswith("新增"):
         try:
@@ -38,7 +51,7 @@ def handle_line_message(event):
             print("📌 [DEBUG] time:", time)  # 檢查格式
             add_care_item(user_id, name, situation, date, time)  # 存入資料庫
             print("📌 [DEBUG] name:", name)  # 檢查格式
-            reply_text = f"✅ 已新增名單：{name} - {situation} - {date}"
+            reply_text = f"✅ 恭喜{user_name}已新增名單：{name} - {situation} - {date}"
         except Exception:
             reply_text = "⚠️ 格式錯誤！請使用「新增關懷: 姓名, 內容」"
 
