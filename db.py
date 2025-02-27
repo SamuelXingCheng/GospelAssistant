@@ -1,9 +1,15 @@
 import firebase_admin
 from firebase_admin import credentials, firestore
 from config import FIREBASE_CREDENTIALS_PATH  # 匯入 Firebase 金鑰路徑
+import os
 
 # 初始化 Firebase
-cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+# 如果是在本地環境（非 Render），則載入 憑證檔案
+if not os.getenv("RENDER"):
+    cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
+else:
+    cred = credentials.Certificate("/etc/secrets/gospelassistant-firebase-adminsdk-fbsvc-69aeff154b.json")
+
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
