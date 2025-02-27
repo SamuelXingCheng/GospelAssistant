@@ -63,13 +63,14 @@ def handle_line_message(event):
         formatted_list = []
         for i, c in enumerate(care_list):
             current_date = c.get('date', '無日期')  # 取得目前的日期
-            
+            user_name = c.get('user_name', '未知使用者')  # 取得 LINE 名稱
+
             # 如果當前日期與前一個不同，則印出日期
             date_display = f"📅 {current_date}\n" if current_date != previous_date else ""
             
             # 建立每一行的文字
             formatted_list.append(
-                f"{date_display}{i+1}. {c.get('name', '未知')}：{c.get('situation', '無內容')}"
+                f"{date_display}{i+1}. {c.get('name', '未知')}：{c.get('situation', '無內容')} - {user_name}"
             )
             
             # 更新 previous_date

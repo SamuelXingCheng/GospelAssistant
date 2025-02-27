@@ -3,6 +3,7 @@ from firebase_admin import credentials, firestore
 from config import FIREBASE_CREDENTIALS_PATH  # 匯入 Firebase 金鑰路徑
 import os
 
+
 # 初始化 Firebase
 
 cred = credentials.Certificate(FIREBASE_CREDENTIALS_PATH)
@@ -44,13 +45,23 @@ def add_care_item(user_id, name, situation, date, time):
     doc_ref.set({"care_items": existing_data})
 
 def get_care_list():
+    from  line_bot import get_line_user_name
     """取得所有關懷名單"""
     docs = db.collection("care_list").stream()
     care_list = []
     for doc in docs:
         data = doc.to_dict()
         care_items = data.get("care_items", [])  # 取得 care_items 陣列
-        care_list.extend(care_items)  # 合併所有 care_items 到 care_list
+        
+        for item in care_items:
+            print("📌 [DEBUG] 查看db.py item:", item)  # 檢查格式
+            user_id = item["user_id"]
+            #user_id = ""
+            print("📌 [DEBUG] 查看db.py user_id:", user_id)  # 檢查格式
+            user_name = get_line_user_name(user_id)  # 取得 LINE 使用者名稱
+            print("📌 [DEBUG] 查看db.py user_name:", user_name)  # 檢查格式
+            item["user_name"] = user_name  # 加入 LINE 名稱
+            care_list.append(item)
     return care_list
 
 def get_user_care_list(user_id):
