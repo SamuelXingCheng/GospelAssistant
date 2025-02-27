@@ -60,6 +60,7 @@ def handle_line_message(event):
         care_items = [item for care in care_list for item in care.get("care_items", [])]
         
         previous_date = None  # 記錄上一筆的日期
+        previous_user = None  # 記錄上一筆的 LINE 名稱
         formatted_list = []
         for i, c in enumerate(care_list):
             current_date = c.get('date', '無日期')  # 取得目前的日期
@@ -68,13 +69,17 @@ def handle_line_message(event):
             # 如果當前日期與前一個不同，則印出日期
             date_display = f"📅 {current_date}\n" if current_date != previous_date else ""
             
+            # 判斷是否顯示使用者名稱
+            user_display = f"👤 {user_name}\n" if user_name != previous_user else ""
+
             # 建立每一行的文字
             formatted_list.append(
-                f"{date_display}{i+1}. {c.get('name', '未知')}：{c.get('situation', '無內容')} - {user_name}"
+                f"{date_display}{user_display}{i+1}. {c.get('name', '未知')}：{c.get('situation', '無內容')}"
             )
             
             # 更新 previous_date
             previous_date = current_date
+            previous_user = user_name
         
         reply_text = "\n".join(formatted_list) if formatted_list else "📭 目前沒有牧養名單。"
 
