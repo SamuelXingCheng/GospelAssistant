@@ -1,6 +1,6 @@
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from db import add_care_item, get_care_list, get_conversation, save_conversation
+from db import add_care_item, get_care_list, get_user_care_list, get_conversation, save_conversation
 from openai_api import get_openai_response  # OpenAI API 處理
 from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
 from openai_parser import extract_person_info  # 新增資料萃取功能
@@ -42,16 +42,26 @@ def handle_line_message(event):
         except Exception:
             reply_text = "⚠️ 格式錯誤！請使用「新增關懷: 姓名, 內容」"
 
-    elif user_message == "查看牧養名單":
+    elif user_message == "查看所有牧養名單":
         care_list = get_care_list()
         care_items = [item for care in care_list for item in care.get("care_items", [])]
 
         reply_text = "\n".join([
-            f"📌 {c.get('date', '無日期')} : {c.get('name', '未知')} - {c.get('situation', '無內容')}"
-            for c in care_list
+            f"{i+1}. {c.get('name', '未知')}：{c.get('situation', '無內容')}：📅 {c.get('date', '無日期')}"
+            for i, c in enumerate(care_list)
         ]) if care_list else "📭 目前沒有牧養名單。"
+        print("📌 [DEBUG] 查看所有牧養名單:", care_list)  # 檢查格式
 
-        print("📌 [DEBUG] care_list:", care_list)  # 檢查格式
+    elif user_message == "查看牧養名單":
+        user_id = event.source.user_id  # 取得使用者的 LINE ID
+        care_items = get_user_care_list(user_id)  # 只取該使用者的名單
+
+        reply_text = "\n\n".join([
+            f"{i+1}. {c.get('name', '未知')}：{c.get('situation', '無內容')}：📅 {c.get('date', '無日期')}"
+            for i, c in enumerate(care_items)
+        ]) if care_items else "📭 目前沒有您的牧養名單。"
+        print("📌 [DEBUG] 查看牧養名單:")  # 檢查格式
+
     else:
         # **取得過去的對話歷史**
         conversation_history = get_conversation(user_id)

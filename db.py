@@ -41,6 +41,16 @@ def get_care_list():
         care_list.extend(care_items)  # 合併所有 care_items 到 care_list
     return care_list
 
+def get_user_care_list(user_id):
+    """取得特定使用者的關懷名單"""
+    doc_ref = db.collection("care_list").document(user_id)  # 查詢指定 user_id 的文件
+    doc = doc_ref.get()
+
+    if doc.exists:
+        data = doc.to_dict()
+        return data.get("care_items", [])  # 只回傳該 user_id 的 care_items
+    else:
+        return []  # 若該使用者沒有資料則回傳空陣列
 
 def save_conversation(user_id, messages):
     """儲存使用者對話紀錄"""
