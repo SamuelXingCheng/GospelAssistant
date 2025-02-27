@@ -5,6 +5,7 @@ from openai_api import get_openai_response  # OpenAI API 處理
 from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
 from openai_parser import extract_person_info  # 新增資料萃取功能
 from linebot.exceptions import InvalidSignatureError
+from flex_message import get_care_list_flex  # 匯入 Flex Message 產生函式
 
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
@@ -99,6 +100,11 @@ def handle_line_message(event):
         ]) if care_items else "📭 目前沒有您的牧養名單。"
         print("📌 [DEBUG] 查看牧養名單:")  # 檢查格式
 
+    elif user_message == "牧養提醒":# 📌 **當使用者輸入「提醒牧養名單」時，回應 Flex Message**
+        flex_message = get_care_list_flex()
+        line_bot_api.reply_message(event.reply_token, flex_message)
+        return
+        
     else:
         # **取得過去的對話歷史**
         conversation_history = get_conversation(user_id)
@@ -125,3 +131,4 @@ def handle_line_message(event):
         event.reply_token,
         TextSendMessage(text=reply_text)
     )
+
