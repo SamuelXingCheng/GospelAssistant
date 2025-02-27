@@ -20,7 +20,7 @@ else:
     LINE_CHANNEL_ACCESS_TOKEN = os.getenv("LINE_CHANNEL_ACCESS_TOKEN")
     LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-
+    FIREBASE_CREDENTIALS_PATH = "/etc/secrets/gospelassistant-firebase-adminsdk-fbsvc-69aeff154b.json"
     #FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")  # Firebase 金鑰檔案路徑
 
 # 檢查是否成功載入（可在本地測試時開啟）
