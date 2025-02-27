@@ -39,7 +39,8 @@ def add_care_item(user_id, name, situation, date, time):
         "name": name,
         "situation": situation,
         "date": date,
-        "time": time
+        "time": time,
+        "user_id": user_id
     })
     # 更新 Firestore
     doc_ref.set({"care_items": existing_data})
@@ -52,7 +53,7 @@ def get_care_list():
     for doc in docs:
         data = doc.to_dict()
         care_items = data.get("care_items", [])  # 取得 care_items 陣列
-        
+
         for item in care_items:
             print("📌 [DEBUG] 查看db.py item:", item)  # 檢查格式
             user_id = item["user_id"]
