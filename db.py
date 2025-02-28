@@ -2,7 +2,7 @@ import firebase_admin
 from firebase_admin import credentials, firestore
 from config import FIREBASE_CREDENTIALS_PATH  # 匯入 Firebase 金鑰路徑
 import os
-
+from datetime import datetime
 
 # 初始化 Firebase
 
@@ -22,6 +22,60 @@ def get_user_name(user_id):
     """從 Firestore 取得使用者名稱"""
     doc = db.collection("users").document(user_id).get()
     return doc.to_dict().get("name") if doc.exists else None
+
+def add_shepherding_log(user_id, target_name, content):
+    """
+    新增牧養記錄。
+    
+    :param name: 牧養對象姓名
+    :param content: 牧養內容
+    """
+    doc_ref = db.collection("care_list").document(user_id)
+    doc = doc_ref.get()
+
+    logs = []
+    if doc.exists:
+        care_items = doc.to_dict().get("care_items", [])
+        
+        # 🔎 找到對應的對象
+        for item in care_items:
+            if item.get("name") == target_name:
+                # 若已有 logs，則追加
+                if "logs" in item:
+                    date = datetime.now().strftime("%Y-%m-%d")
+                    content_with_date = f"\n📅 日期：{date}\n {content}"
+                    # 🔹 在內容前加入情況
+                    item["logs"].append(content_with_date)
+                else:
+                    date = datetime.now().strftime("%Y-%m-%d")
+                    content_with_situation_date = f"📝 第一次情況：{item.get("situation")}\n\n📖 牧養記錄：\n📅 日期：{date}\n{content}"
+                    item["logs"] = [content_with_situation_date]
+                break
+        # 🔹 若已有記錄，追加新內容
+        doc_ref.update({"care_items": care_items})
+        # 🔹 回傳完整的牧養記錄
+        logs_text = "\n".join(item["logs"])
+        return f"✅ {target_name} 的牧養記錄已更新！\n\n{logs_text}"
+
+def get_shepherding_logs(user_id, name):
+    """
+    查詢牧養記錄。
+    
+    :param name: 牧養對象姓名
+    :return: 牧養內容清單
+    """
+    doc_ref = db.collection("care_list").document(user_id)
+    doc = doc_ref.get()
+
+    logs = []
+    if doc.exists:
+        care_items = doc.to_dict().get("care_items", [])  # 取得 care_items 陣列
+        for item in care_items:
+            if item.get("name") == name:
+                logs = item.get("logs", [])  # 取得該人的 logs
+                break  # 找到就跳出
+
+    return logs
 
 def add_care_item(user_id, name, situation, date, time):
     """將關懷名單存入 Firestore"""

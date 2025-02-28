@@ -5,6 +5,9 @@ from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環�
 from linebot.exceptions import InvalidSignatureError
 from flex_message import get_care_list_flex  # 匯入 Flex Message 產生函式
 from handlers import handle_add_care_item, handle_view_all_care_list, handle_view_user_care_list, handle_delete_care_item, handle_chat_with_ai
+from shepherding import handle_shepherding_log
+from text_parser import parse_text
+
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
@@ -46,6 +49,9 @@ def handle_line_message(event):
 def process_user_message(user_id, user_name, user_message):
     """根據使用者輸入的訊息選擇相應回應"""
 
+    # **解析使用者輸入**
+    parsed_data = parse_text(user_message)
+    
     # **指令對應函數字典**
     commands = {
         "查看所有牧養名單": handle_view_all_care_list,
@@ -60,10 +66,18 @@ def process_user_message(user_id, user_name, user_message):
      # **判斷是否為「刪除」開頭**
     if user_message.startswith("刪除"):
         return handle_delete_care_item(user_id, user_message)
+    
+     # **判斷是否為「我牧養」開頭**
+    if user_message.startswith("我牧養"):
+        target_name = parsed_data["name"]
+        log_content = parsed_data.get("situation")  # 解析可能的牧養內容
+        return handle_shepherding_log(user_id,target_name, log_content)
 
     # **檢查是否為已定義的指令**
     if user_message in commands:
         return commands[user_message]()
+
+
 
     # **預設為 AI 對話**
     return handle_chat_with_ai(user_id, user_message)

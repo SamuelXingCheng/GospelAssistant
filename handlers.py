@@ -63,8 +63,6 @@ def handle_view_all_care_list():
     reply_text = "\n".join(formatted_list) if formatted_list else "📭 目前沒有牧養名單。"
     return reply_text
 
-    
-
 def handle_view_user_care_list(user_id):
     """處理查看使用者的牧養名單"""
     care_items = get_user_care_list(user_id)  # 只取該使用者的名單
