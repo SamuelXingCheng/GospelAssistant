@@ -67,11 +67,11 @@ def process_user_message(user_id, user_name, user_message):
     if user_message.startswith("刪除"):
         return handle_delete_care_item(user_id, user_message)
     
-     # **判斷是否為「我牧養」開頭**
-    if user_message.startswith("我牧養"):
+    # **判斷是否為「牧養」開頭**
+    if user_message.startswith("牧養"):
         target_name = parsed_data["name"]
         log_content = parsed_data.get("situation")  # 解析可能的牧養內容
-        return handle_shepherding_log(user_id,target_name, log_content)
+        return handle_shepherding_log(user_id, target_name, log_content)
 
     # **檢查是否為已定義的指令**
     if user_message in commands:

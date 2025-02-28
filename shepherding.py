@@ -22,7 +22,7 @@ def handle_shepherding_log(user_id, target_name, log_content=None):
         # 🔹 查詢牧養記錄
         logs = get_shepherding_logs(user_id, target_name)
         if not logs:
-            return f"📭「{target_name}」目前沒有牧養記錄，請輸入「我牧養 {target_name}，內容」來新增。"
+            return f"📭「{target_name}」目前沒有牧養記錄，請輸入「牧養 {target_name}，內容」來新增。"
         
         log_text = "\n".join([f" {log}" for log in logs])
-        return f"📖 牧養記錄（{target_name}）：\n{log_text}"
+        return f"📖 牧養記錄（{target_name}）：\n{log_text}\n\n請繼續輸入「牧養 {target_name}，...」來新增。"
