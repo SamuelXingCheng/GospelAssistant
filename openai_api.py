@@ -23,15 +23,15 @@ def get_openai_shepherding_advice(name, logs):
     :return: AI 生成的建議
     """
     openai_prompt = f"""
-    這是一位名叫 {name} 的弟兄姊妹，這是我目前和他相處的情況和對他過往牧養記錄：
+    我是一位牧者，想要關心一位名叫 {name} 的弟兄姊妹，這是我目前和他相處的情況和對他過往牧養記錄：
     {logs}
 
-    請根據這些資訊，提供適合的關心建議，並以溫暖的語氣回應。
+    請根據這些資訊，提供我適合的關心建議，看我可以開啟什麼樣的話題。並且請根據「恢復本版聖經」，提供我合適的經文。
     """
     print("📌 [DEBUG] get_openai_shepherding_advice:", name)  # 檢查格式
     print("📌 [DEBUG] get_openai_shepherding_advice:", logs)  # 檢查格式
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-3.5-turbo",
         messages=[{"role": "system", "content": "你是一位有有趣的聊天員，擅長關心開啟話題。"},
                   {"role": "user", "content": openai_prompt}]
     )
