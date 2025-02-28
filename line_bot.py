@@ -1,9 +1,7 @@
 from linebot import LineBotApi, WebhookHandler
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
-from db import is_name_exists, add_care_item, get_care_list,save_user_name, get_user_name, get_user_care_list, get_conversation, save_conversation
-from openai_api import get_openai_response  # OpenAI API 處理
+from db import is_name_exists, add_care_item, get_care_list,save_user_name, get_user_name
 from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
-from openai_parser import extract_person_info  # 新增資料萃取功能
 from linebot.exceptions import InvalidSignatureError
 from flex_message import get_care_list_flex  # 匯入 Flex Message 產生函式
 from handlers import handle_add_care_item, handle_view_all_care_list, handle_view_user_care_list, handle_chat_with_ai
@@ -47,13 +45,21 @@ def handle_line_message(event):
     
 def process_user_message(user_id, user_name, user_message):
     """根據使用者輸入的訊息選擇相應回應"""
+
+    # **指令對應函數字典**
+    commands = {
+        "查看所有牧養名單": handle_view_all_care_list,
+        "查看牧養名單": lambda: handle_view_user_care_list(user_id),
+        "牧養提醒": get_care_list_flex
+    }
+
+     # **判斷是否為「新增」開頭**
     if user_message.startswith("新增"):
         return handle_add_care_item(user_id, user_name, user_message)
-    elif user_message == "查看所有牧養名單":
-        return handle_view_all_care_list()
-    elif user_message == "查看牧養名單":
-        return handle_view_user_care_list(user_id)
-    elif user_message == "牧養提醒":
-        return get_care_list_flex()
-    else:
-        return handle_chat_with_ai(user_id, user_message)
+
+    # **檢查是否為已定義的指令**
+    if user_message in commands:
+        return commands[user_message]()
+
+    # **預設為 AI 對話**
+    return handle_chat_with_ai(user_id, user_message)

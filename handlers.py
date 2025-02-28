@@ -20,7 +20,7 @@ def handle_add_care_item(user_id, user_name, user_message):
             print("📌 [DEBUG] time:", time)  # 檢查格式
             add_care_item(user_id, name, situation, date, time)  # 存入資料庫
             print("📌 [DEBUG] name:", name)  # 檢查格式
-            reply_text = f"✅ 恭喜{user_name}已新增名單：{name} - {situation} - {date}"
+            reply_text = f"✅ 恭喜 {user_name} 已新增名單：{name} - {situation} - {date}"
     except Exception:
         reply_text = "⚠️ 格式錯誤！請使用「新增關懷: 姓名, 內容」"
 
