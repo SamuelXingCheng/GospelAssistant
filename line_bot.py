@@ -36,7 +36,7 @@ def handle_line_message(event):
         save_user_name(user_id, user_name)  # 存入 Firestore
 
     reply_text = process_user_message(user_id, user_name, user_message)
-
+    print("📌 [DEBUG] handle_line_message:", reply_text)  # 檢查格式
     # 回應使用者
     line_bot_api.reply_message(
         event.reply_token,

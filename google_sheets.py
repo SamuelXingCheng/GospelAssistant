@@ -47,4 +47,4 @@ def update_google_sheet(sheet_name="自動更新表"):
 
 # 測試時可執行此程式來同步 Google Sheets
 if __name__ == "__main__":
-    update_google_sheet(debug=True)
+    update_google_sheet(debug=False)

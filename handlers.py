@@ -1,6 +1,7 @@
 from db import is_name_exists, add_care_item, get_care_list, get_user_care_list, save_conversation, get_conversation, delete_care_item
 from openai_parser import extract_person_info
 from openai_api import get_openai_response
+from text_parser import parse_text
 
 def handle_add_care_item(user_id, user_name, user_message, use_ai=False):
     """處理新增關懷名單的邏輯"""
@@ -27,6 +28,7 @@ def handle_add_care_item(user_id, user_name, user_message, use_ai=False):
             add_care_item(user_id, name, situation, date, time)  # 存入資料庫
             print("📌 [DEBUG] name:", name)  # 檢查格式
             reply_text = f"✅ 恭喜 {user_name} 已新增名單：{name} - {situation} - {date}"
+        return reply_text
     except Exception:
         reply_text = "⚠️ 格式錯誤！請使用「新增關懷: 姓名, 內容」"
 
@@ -61,7 +63,7 @@ def handle_view_all_care_list():
     reply_text = "\n".join(formatted_list) if formatted_list else "📭 目前沒有牧養名單。"
     return reply_text
 
-    print("📌 [DEBUG] 查看所有牧養名單:", care_list)  # 檢查格式
+    
 
 def handle_view_user_care_list(user_id):
     """處理查看使用者的牧養名單"""
