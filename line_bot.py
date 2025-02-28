@@ -73,10 +73,10 @@ def process_user_message(user_id, user_name, user_message):
         log_content = parsed_data.get("situation")  # 解析可能的牧養內容
         return handle_shepherding_log(user_id, target_name, log_content)
 
-    # **處理「尋求 人名」指令**
-    parsed_data = parse_text(user_message)
-    if parsed_data.get("name"):
-        return handle_seek_shepherding_advice(user_id, parsed_data["name"])
+    # **判斷是否為「尋求」開頭**
+    if user_message.startswith("尋求"):
+        target_name = parsed_data["name"]
+        return handle_seek_shepherding_advice(user_id, target_name)
 
     # **檢查是否為已定義的指令**
     if user_message in commands:

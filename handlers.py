@@ -105,7 +105,9 @@ def handle_seek_shepherding_advice(user_id, target_name):
     :param target_name: 牧養對象姓名
     :return: AI 生成的建議
     """
-
+    if not is_name_exists(target_name) :
+        return f"⚠️ 找不到 {target_name}，請確認名字是否正確"
+        
     # 🔎 查詢該人的牧養記錄
     logs = get_shepherding_logs(user_id, target_name)
 
