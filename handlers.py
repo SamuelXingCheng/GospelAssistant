@@ -107,7 +107,7 @@ def handle_seek_shepherding_advice(user_id, target_name):
     """
     if not is_name_exists(target_name) :
         return f"⚠️ 找不到 {target_name}，請確認名字是否正確"
-        
+
     # 🔎 查詢該人的牧養記錄
     logs = get_shepherding_logs(user_id, target_name)
 
@@ -132,3 +132,42 @@ def handle_delete_care_item(user_id, user_message):
         return f"✅ 已將 {name_to_delete} 從您的牧養名單刪除"
     else:
         return f"⚠️ 找不到 {name_to_delete}，請確認名字是否正確"
+
+def handle_help_command():
+    """
+    回應使用者目前可用的功能語法
+    """
+    help_text = """
+✨【📖 牧養助手功能說明】✨
+
+1️⃣ **新增 牧養對象**  
+   👉 語法：`新增 人名，系級、身份、情況`  
+   ✅ 範例：`新增 小明，財經一，大專生，最近壓力很大，需要關心`
+
+2️⃣ **刪除 牧養對象**  
+   👉 語法：`刪除 人名`  
+   ✅ 範例：`刪除 小明`
+
+3️⃣ **查看 牧養名單**  
+   👉 語法：`查看牧養名單`  
+   ✅ 範例：`查看牧養名單`
+
+4️⃣ **新增 牧養記錄**  
+   👉 語法：`牧養 人名，內容`  
+   ✅ 範例：`牧養 小明，今天讀了約翰福音，很受感動！`
+
+5️⃣ **查詢 牧養記錄**  
+   👉 語法：`牧養 人名`  
+   ✅ 範例：`牧養 小明`
+
+6️⃣ **尋求AI關心建議**  
+   👉 語法：`尋求 人名`  
+   ✅ 範例：`尋求 小明`
+
+7️⃣ **查看使用說明**  
+   👉 語法：`使用說明`  
+   ✅ 範例：`使用說明`
+
+💡 請依照上述語法輸入指令，來使用AI好牧人小幫手！
+"""
+    return help_text

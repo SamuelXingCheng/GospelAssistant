@@ -4,7 +4,7 @@ from db import is_name_exists, add_care_item, get_care_list,save_user_name, get_
 from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
 from linebot.exceptions import InvalidSignatureError
 from flex_message import get_care_list_flex  # 匯入 Flex Message 產生函式
-from handlers import handle_add_care_item, handle_view_all_care_list, handle_view_user_care_list, handle_delete_care_item, handle_chat_with_ai, handle_seek_shepherding_advice
+from handlers import handle_add_care_item, handle_view_all_care_list, handle_view_user_care_list, handle_delete_care_item, handle_chat_with_ai, handle_seek_shepherding_advice, handle_help_command
 from shepherding import handle_shepherding_log
 from text_parser import parse_text
 
@@ -56,7 +56,8 @@ def process_user_message(user_id, user_name, user_message):
     commands = {
         "查看所有牧養名單": handle_view_all_care_list,
         "查看牧養名單": lambda: handle_view_user_care_list(user_id),
-        "牧養提醒": get_care_list_flex
+        "牧養提醒": get_care_list_flex,
+        "使用說明": handle_help_command
     }
 
      # **判斷是否為「新增」開頭**
