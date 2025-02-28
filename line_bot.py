@@ -4,7 +4,7 @@ from db import is_name_exists, add_care_item, get_care_list,save_user_name, get_
 from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
 from linebot.exceptions import InvalidSignatureError
 from flex_message import get_care_list_flex  # 匯入 Flex Message 產生函式
-from handlers import handle_add_care_item, handle_view_all_care_list, handle_view_user_care_list, handle_chat_with_ai
+from handlers import handle_add_care_item, handle_view_all_care_list, handle_view_user_care_list, handle_delete_care_item, handle_chat_with_ai
 line_bot_api = LineBotApi(LINE_CHANNEL_ACCESS_TOKEN)
 handler = WebhookHandler(LINE_CHANNEL_SECRET)
 
@@ -56,6 +56,10 @@ def process_user_message(user_id, user_name, user_message):
      # **判斷是否為「新增」開頭**
     if user_message.startswith("新增"):
         return handle_add_care_item(user_id, user_name, user_message)
+    
+     # **判斷是否為「刪除」開頭**
+    if user_message.startswith("刪除"):
+        return handle_delete_care_item(user_id, user_message)
 
     # **檢查是否為已定義的指令**
     if user_message in commands:

@@ -76,6 +76,26 @@ def get_user_care_list(user_id):
     else:
         return []  # 若該使用者沒有資料則回傳空陣列
 
+def delete_care_item(user_id, name):
+    """從 Firestore 刪除關懷名單中的特定人"""
+    try:
+        doc_ref = db.collection("care_list").document(user_id)
+        doc = doc_ref.get()
+
+        if doc.exists:
+            data = doc.to_dict().get("care_items", [])
+            new_data = [entry for entry in data if entry["name"] != name]
+
+            if len(new_data) == len(data):  # 如果名單長度沒變，代表沒找到
+                return False
+
+            doc_ref.update({"care_items": new_data})  # 更新 Firestore
+            return True
+        return False
+    except Exception as e:
+        print(f"❌ [ERROR] 刪除失敗: {e}")
+        return False
+
 def save_conversation(user_id, messages):
     """儲存使用者對話紀錄"""
     db.collection("conversations").document(user_id).set({"messages": messages})

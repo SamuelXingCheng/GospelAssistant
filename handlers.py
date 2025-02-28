@@ -1,4 +1,4 @@
-from db import is_name_exists, add_care_item, get_care_list, get_user_care_list, save_conversation, get_conversation
+from db import is_name_exists, add_care_item, get_care_list, get_user_care_list, save_conversation, get_conversation, delete_care_item
 from openai_parser import extract_person_info
 from openai_api import get_openai_response
 
@@ -91,3 +91,16 @@ def handle_chat_with_ai(user_id, user_message):
         print(f"OpenAI 回應錯誤: {e}")
 
     return reply_text
+
+def handle_delete_care_item(user_id, user_message):
+    """處理刪除牧養名單項目"""
+    name_to_delete = user_message.replace("刪除", "").strip()  # 取得使用者輸入的名稱
+    print("📌 [DEBUG] 查看刪除名單:", name_to_delete)  # 檢查格式
+    if not name_to_delete:
+        return "❌ 請提供要刪除的名字，例如：刪除 小明"
+
+    success = delete_care_item(user_id, name_to_delete)  # 嘗試刪除
+    if success:
+        return f"✅ 已刪除 {name_to_delete} 從您的牧養名單"
+    else:
+        return f"⚠️ 找不到 {name_to_delete}，請確認名字是否正確"
