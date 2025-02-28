@@ -2,10 +2,16 @@ from db import is_name_exists, add_care_item, get_care_list, get_user_care_list,
 from openai_parser import extract_person_info
 from openai_api import get_openai_response
 
-def handle_add_care_item(user_id, user_name, user_message):
+def handle_add_care_item(user_id, user_name, user_message, use_ai=False):
     """處理新增關懷名單的邏輯"""
     try:
-        extracted_info = extract_person_info(user_message)
+        # **選擇解析方式**
+        if use_ai:
+            extracted_info = extract_person_info(user_message)  # AI 解析
+        else:
+            extracted_info = parse_text(user_message)  # 非 AI 解析
+        
+        # **擷取關鍵資訊**
         name = extracted_info.get("name", "未知")
         if is_name_exists(name):
             reply_text = f"⚠️ 名單中已經有 {name}，請勿重複新增！"
@@ -101,6 +107,6 @@ def handle_delete_care_item(user_id, user_message):
 
     success = delete_care_item(user_id, name_to_delete)  # 嘗試刪除
     if success:
-        return f"✅ 已刪除 {name_to_delete} 從您的牧養名單"
+        return f"✅ 已將 {name_to_delete} 從您的牧養名單刪除"
     else:
         return f"⚠️ 找不到 {name_to_delete}，請確認名字是否正確"
