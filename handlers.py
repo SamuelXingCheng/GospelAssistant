@@ -1,6 +1,6 @@
-from db import is_name_exists, add_care_item, get_care_list, get_user_care_list, save_conversation, get_conversation, delete_care_item
+from db import is_name_exists, add_care_item, get_care_list, get_user_care_list, save_conversation, get_conversation, delete_care_item, get_shepherding_logs
 from openai_parser import extract_person_info
-from openai_api import get_openai_response
+from openai_api import get_openai_response, get_openai_shepherding_advice
 from text_parser import parse_text
 
 def handle_add_care_item(user_id, user_name, user_message, use_ai=False):
@@ -97,6 +97,26 @@ def handle_chat_with_ai(user_id, user_message):
         print(f"OpenAI 回應錯誤: {e}")
 
     return reply_text
+
+def handle_seek_shepherding_advice(user_id, target_name):
+    """
+    根據牧養對象的情況與記錄，向 OpenAI 尋求關心方向建議。
+
+    :param target_name: 牧養對象姓名
+    :return: AI 生成的建議
+    """
+
+    # 🔎 查詢該人的牧養記錄
+    logs = get_shepherding_logs(user_id, target_name)
+
+    # 🧠 生成 AI 輔導建議
+    advice = get_openai_shepherding_advice(
+        name=target_name,
+        logs=logs
+    )
+
+    return f"📝 **關心建議**：\n{advice}"
+
 
 def handle_delete_care_item(user_id, user_message):
     """處理刪除牧養名單項目"""

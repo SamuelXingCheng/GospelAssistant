@@ -26,8 +26,7 @@ def parse_text(text):
         return {"error": "⚠️ 無法解析，請輸入有效內容"}
     print("📌 [DEBUG] parse_text: parts", parts)  # 檢查格式
     # **解析姓名**
-    if parts and (parts[0].startswith("新增") or parts[0].startswith("牧養")):
-        parts.pop(0)  # 先移除「新增」
+    parts.pop(0)  # 先移除「新增」、「牧養」、「尋求」
     if parts:
         result["name"] = parts.pop(0)  # 取出正確的姓名
 

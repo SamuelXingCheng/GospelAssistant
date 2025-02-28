@@ -4,7 +4,7 @@ from db import is_name_exists, add_care_item, get_care_list,save_user_name, get_
 from config import LINE_CHANNEL_ACCESS_TOKEN, LINE_CHANNEL_SECRET  # 匯入環境變數
 from linebot.exceptions import InvalidSignatureError
 from flex_message import get_care_list_flex  # 匯入 Flex Message 產生函式
-from handlers import handle_add_care_item, handle_view_all_care_list, handle_view_user_care_list, handle_delete_care_item, handle_chat_with_ai
+from handlers import handle_add_care_item, handle_view_all_care_list, handle_view_user_care_list, handle_delete_care_item, handle_chat_with_ai, handle_seek_shepherding_advice
 from shepherding import handle_shepherding_log
 from text_parser import parse_text
 
@@ -72,6 +72,11 @@ def process_user_message(user_id, user_name, user_message):
         target_name = parsed_data["name"]
         log_content = parsed_data.get("situation")  # 解析可能的牧養內容
         return handle_shepherding_log(user_id, target_name, log_content)
+
+    # **處理「尋求 人名」指令**
+    parsed_data = parse_text(user_message)
+    if parsed_data.get("name"):
+        return handle_seek_shepherding_advice(user_id, parsed_data["name"])
 
     # **檢查是否為已定義的指令**
     if user_message in commands:
