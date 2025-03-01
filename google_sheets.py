@@ -2,16 +2,17 @@ import gspread
 from google.oauth2.service_account import Credentials
 from db import get_care_list  # 取得關懷名單的函式
 import logging
+from config import GOOGLESHEET_SERVICE_ACCOUNT_FILE
 
 # 設定 Logging
 logging.basicConfig(level=logging.INFO)
 
 # 設定 Google Sheets API 憑證與權限範圍
 SCOPES = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-SERVICE_ACCOUNT_FILE = "gospelassistant-452215-3aa41b17c041.json"  # Google Sheets API 憑證檔案
+#SERVICE_ACCOUNT_FILE = "gospelassistant-452215-3aa41b17c041.json"  # Google Sheets API 憑證檔案
 
 # 授權並連接 Google Sheets
-creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+creds = Credentials.from_service_account_file(GOOGLESHEET_SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 client = gspread.authorize(creds)
 
 # 指定 Google Sheets ID

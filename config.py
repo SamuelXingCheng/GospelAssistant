@@ -14,6 +14,7 @@ if not os.getenv("RENDER"):
         OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
         FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")  # Firebase 金鑰檔案路徑
+        GOOGLESHEET_SERVICE_ACCOUNT_FILE = os.getenv("GOOGLESHEET_SERVICE_ACCOUNT_FILE")
     else:
         print("⚠️ 無法找到 .env 檔案，請確認路徑是否正確！")
 else:
@@ -21,6 +22,7 @@ else:
     LINE_CHANNEL_SECRET = os.getenv("LINE_CHANNEL_SECRET")
     OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
     FIREBASE_CREDENTIALS_PATH = "/etc/secrets/gospelassistant-firebase-adminsdk-fbsvc-69aeff154b.json"
+    SERVICE_ACCOUNT_FILE = "/etc/secrets/gospelassistant-452215-3aa41b17c041.json"
     #FIREBASE_CREDENTIALS_PATH = os.getenv("FIREBASE_CREDENTIALS_PATH")  # Firebase 金鑰檔案路徑
 
 # 檢查是否成功載入（可在本地測試時開啟）
