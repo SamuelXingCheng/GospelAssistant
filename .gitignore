@@ -1,5 +1,5 @@
 *.env
 *.json
 __pycache__/
-
+bible_faiss.index
 .DS_Store
