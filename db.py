@@ -48,7 +48,8 @@ def add_shepherding_log(user_id, target_name, content):
                     item["logs"].append(content_with_date)
                 else:
                     date = datetime.now().strftime("%Y-%m-%d")
-                    content_with_situation_date = f"📝 第一次情況：{item.get("situation")}\n\n📖 牧養記錄：\n📅 日期：{date}\n{content}"
+                    situation = item.get("situation")
+                    content_with_situation_date = f"📝 第一次情況：{situation}\n\n📖 牧養記錄：\n📅 日期：{date}\n{content}"
                     item["logs"] = [content_with_situation_date]
                 break
         # 🔹 若已有記錄，追加新內容
