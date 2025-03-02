@@ -101,5 +101,5 @@ def search_bible(query, top_k=3):
     return response.choices[0].message.content.strip()
 
 # 測試查詢
-query = "我出身不好，怎麼辦？"
+query = "神永遠的經綸是什麼？"
 print(search_bible(query))

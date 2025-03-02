@@ -147,7 +147,6 @@ def get_bible_chapter(book_no: int, chapter_no: int):
         verse_text = verse_td.get_text(" ", strip=True)  # 取得純文字經文
 
         bible_data.append({"verse": verse_number, "text": verse_text, "notes": notes})
-
     # 儲存 JSON
     json_filename = f"{JSON_FOLDER}/Bible_{book_no}_{chapter_no}.json"
     with open(json_filename, "w", encoding="utf-8") as file:
@@ -159,10 +158,16 @@ def get_bible_chapter(book_no: int, chapter_no: int):
 def scrape_full_bible():
     """ 自動爬取 66 卷書的所有章節 """
     for book_no, total_chapters in BIBLE_BOOKS.items():
+        bible_data = []
         for chapter_no in range(1, total_chapters + 1):
             print(f"\n📖 爬取 聖經 {book_no} 卷 第 {chapter_no} 章...")
-            get_bible_chapter(book_no, chapter_no)
+            bible_data.append(get_bible_chapter(book_no, chapter_no))
             time.sleep(1)  # 避免過度請求，被伺服器封鎖
+        json_filename = f"{JSON_FOLDER}/Bible_{book_no}.json"
+        with open(json_filename, "w", encoding="utf-8") as f:
+            json.dump(bible_data, f, ensure_ascii=False, indent=4)
+        
+        print(f"✅ 已儲存 {book_no}")
 
 def scrape_gospels():
     """ 只爬取四福音書（馬太福音、馬可福音、路加福音、約翰福音） """
