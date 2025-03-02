@@ -55,7 +55,7 @@ def process_user_message(user_id, user_name, user_message):
     # **指令對應函數字典**
     commands = {
         "查看所有牧養名單": handle_view_all_care_list,
-        "查看牧養名單": lambda: handle_view_user_care_list(user_id),
+        "查看牧養名單": lambda: handle_view_user_care_list(user_id, user_name),
         "牧養提醒": get_care_list_flex,
         "使用說明": handle_help_command
     }

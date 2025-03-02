@@ -63,11 +63,11 @@ def handle_view_all_care_list():
     reply_text = "\n".join(formatted_list) if formatted_list else "📭 目前沒有牧養名單。"
     return reply_text
 
-def handle_view_user_care_list(user_id):
+def handle_view_user_care_list(user_id, user_name):
     """處理查看使用者的牧養名單"""
     care_items = get_user_care_list(user_id)  # 只取該使用者的名單
 
-    reply_text = "\n\n".join([
+    reply_text = f"{user_name} 的牧養名單：\n\n" + "\n\n".join([
         f"{i+1}. {c.get('name', '未知')}：{c.get('situation', '無內容')}：📅 {c.get('date', '無日期')}"
         for i, c in enumerate(care_items)
     ]) if care_items else "📭 目前沒有您的牧養名單。"
