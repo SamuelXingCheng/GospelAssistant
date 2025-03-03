@@ -3,3 +3,5 @@
 __pycache__/
 bible_faiss.index
 .DS_Store
+bible_index/
+*.index
