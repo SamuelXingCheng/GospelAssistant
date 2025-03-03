@@ -27,7 +27,7 @@ def update_google_sheet(sheet_name="自動更新表"):
     
     # 清空分頁內容
     sheet.clear()
-    logging.info(f"📌 收到 Update sheet 請求: {care_list}")
+    # logging.info(f"📌 收到 Update sheet 請求: {care_list}")
     # 插入標題列
     sheet.append_row(["日期", "姓名", "校園", "系級", "情況", "接觸人"])
     

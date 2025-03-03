@@ -33,14 +33,15 @@ def parse_text(text):
     # **解析身份、系級、情況**
     remaining_text = []
     for part in parts:
-        if part in identities:
-            result["identity"] = part
-            print("📌 [DEBUG] parse_text: result[identity]",{result["identity"]})  # 檢查格式
-        elif department_pattern.fullmatch(part):  # 確保完整匹配系級
-            result["department"] = part
-            print("📌 [DEBUG] parse_text: result[department]",{result["department"]})  # 檢查格式
-        else:
-            remaining_text.append(part)
+        # if part in identities:
+        #     result["identity"] = part
+        #     print("📌 [DEBUG] parse_text: result[identity]",{result["identity"]})  # 檢查格式
+        # elif department_pattern.fullmatch(part):  # 確保完整匹配系級
+        #     result["department"] = part
+        #     print("📌 [DEBUG] parse_text: result[department]",{result["department"]})  # 檢查格式
+        # else:
+        #     remaining_text.append(part)
+        remaining_text.append(part)
     print("📌 [DEBUG] parse_text: remaining_text",remaining_text)  # 檢查格式
 
     result["date"] = datetime.now().strftime("%Y-%m-%d")
