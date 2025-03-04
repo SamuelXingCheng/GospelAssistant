@@ -37,7 +37,6 @@ def update_google_sheet(sheet_name="自動更新表"):
         sheet.append_row([
             care.get("date", "無日期"),
             care.get("name", "未知"),
-            "逢甲",
             care.get("系級", ""),
             care.get("situation", "無內容"),
             user_name

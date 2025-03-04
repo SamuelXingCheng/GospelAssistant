@@ -18,7 +18,8 @@ TEXTS_FILE = "bible_texts.json"  # 存儲文本資料
 # 設定向量維度（text-embedding-ada-002 的維度為 1536）
 dimension = 1536
 # 創建 IVFFlat 索引，nlist 是簇的數量，適合大數據量
-nlist = 610  # 設定倒排桶數，通常是 sqrt(數據量)
+# nlist = 610  # 設定倒排桶數，通常是 sqrt(數據量)
+nlist = 2749  # 設定倒排桶數，通常是 sqrt(數據量)
 quantizer = faiss.IndexFlatL2(dimension)  # 量化器
 index = faiss.IndexIVFFlat(quantizer, dimension, nlist, faiss.METRIC_L2)  # IVFFlat 索引（需訓練）
 
@@ -130,7 +131,7 @@ def load_faiss_index():
 load_faiss_index()
 
 # 查詢函式
-def search_bible(query, top_k=3):
+def search_bible(query, top_k=5):
     """搜尋最相關的經文"""
     query_vector = get_embedding(query).reshape(1, -1)
     distances, indices = index.search(query_vector, top_k)
@@ -153,5 +154,5 @@ def search_bible(query, top_k=3):
     return response.choices[0].message.content.strip()
 
 # 測試查詢
-query = "神永遠的經綸是什麼？"
+query = "從保羅的書信中，如何啟示出神的經綸？"
 print(search_bible(query))
