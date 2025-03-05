@@ -1,6 +1,7 @@
 import openai
 import os
 from config import OPENAI_API_KEY  # 匯入環境變數
+from faiss_bible_search import search_bible
 
 # 設定 OpenAI API Key
 openai.api_key = OPENAI_API_KEY
@@ -28,12 +29,14 @@ def get_openai_shepherding_advice(name, logs):
 
     請根據這些資訊，提供我適合的關心建議，看我可以開啟什麼樣的話題。並且請根據「恢復本版聖經」，提供我合適的經文。
     """
-    print("📌 [DEBUG] get_openai_shepherding_advice:", name)  # 檢查格式
-    print("📌 [DEBUG] get_openai_shepherding_advice:", logs)  # 檢查格式
-    response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
-        messages=[{"role": "system", "content": "你是一位有有趣的聊天員，擅長關心開啟話題。"},
-                  {"role": "user", "content": openai_prompt}]
-    )
+    return search_bible(openai_prompt)
 
-    return response.choices[0].message.content.strip()
+    # print("📌 [DEBUG] get_openai_shepherding_advice:", name)  # 檢查格式
+    # print("📌 [DEBUG] get_openai_shepherding_advice:", logs)  # 檢查格式
+    # response = client.chat.completions.create(
+    #     model="gpt-3.5-turbo",
+    #     messages=[{"role": "system", "content": "你是一位有有趣的聊天員，擅長關心開啟話題。"},
+    #               {"role": "user", "content": openai_prompt}]
+    # )
+
+    # return response.choices[0].message.content.strip()

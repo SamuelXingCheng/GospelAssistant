@@ -12,8 +12,8 @@ client = OpenAI(api_key=OPENAI_API_KEY)
 
 # 設定 JSON 資料夾與 FAISS 索引檔案
 JSON_FOLDER = "bible_json/各章"
-FAISS_INDEX_FILE = "bible_faiss.index"
-TEXTS_FILE = "bible_texts.json"  # 存儲文本資料
+FAISS_INDEX_FILE = "bible_faiss-030301.index"
+TEXTS_FILE = "bible_texts-030301.json"  # 存儲文本資料
 
 # 設定向量維度（text-embedding-ada-002 的維度為 1536）
 dimension = 1536
@@ -131,7 +131,7 @@ def load_faiss_index():
 load_faiss_index()
 
 # 查詢函式
-def search_bible(query, top_k=5):
+def search_bible(query, top_k=3):
     """搜尋最相關的經文"""
     query_vector = get_embedding(query).reshape(1, -1)
     distances, indices = index.search(query_vector, top_k)
@@ -147,12 +147,12 @@ def search_bible(query, top_k=5):
 
     response = client.chat.completions.create(
         model="gpt-4",
-        messages=[{"role": "system", "content": "你是一個聖經解經助手，請根據恢復本的風格回答問題。"},
+        messages=[{"role": "system", "content": "你是一位有趣的聊天員，擅長關心開啟話題，並常分享恢復本聖經的經文。"},
                   {"role": "user", "content": prompt}]
     )
     
     return response.choices[0].message.content.strip()
 
 # 測試查詢
-query = "從保羅的書信中，如何啟示出神的經綸？"
-print(search_bible(query))
+# query = "從保羅的書信中，如何啟示出神的經綸？"
+# print(search_bible(query))
