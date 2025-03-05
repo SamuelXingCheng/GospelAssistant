@@ -68,15 +68,16 @@ def get_shepherding_logs(user_id, name):
     doc_ref = db.collection("care_list").document(user_id)
     doc = doc_ref.get()
 
-    logs = []
+    texts = []
     if doc.exists:
         care_items = doc.to_dict().get("care_items", [])  # 取得 care_items 陣列
         for item in care_items:
             if item.get("name") == name:
-                logs = item.get("logs", [])  # 取得該人的 logs
+                texts = item.get("logs", [])  # 取得該人的 logs
+                texts.append(item.get("situation", []))  # 取得該人的 logs
                 break  # 找到就跳出
 
-    return logs
+    return texts
 
 def add_care_item(user_id, name, situation, date, time):
     """將關懷名單存入 Firestore"""
